@@ -4,6 +4,30 @@ const Person = ({person}) => (
   <p> {person.name} {person.number}</p>
 )
 
+const Input = ({text, value, handleChange}) => (
+  <div>
+    {text} <input value={value} onChange={handleChange} />
+  </div>
+)
+
+const PersonForm = ({ onSubmit, newName, newNumber, handleNewName, handleNewNumber}) => (
+    <form onSubmit={onSubmit}>
+        <Input text='name:' value={newName} handleChange={handleNewName}/>
+        <Input text='number:' value={newNumber} handleChange={handleNewNumber}/>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+)
+
+const Persons = ({filteredPersons}) => (
+    <div>
+      {filteredPersons.map((person) => ( 
+          <Person key={person.name} person={person}/>
+        ))}
+    </div>
+)
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -53,27 +77,12 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-        <div>
-          filter shown with <input value={searchTerm} onChange={handleSearchChange} />
-        </div>
-      <h2>add a new</h2>
-      <form onSubmit={addName}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <div>
-      {filteredPersons.map((person) => ( 
-          <Person key={person.name} person={person}/>
-        ))}
-    </div>
+      <Input text='filter shown with' value={searchTerm} handleChange={handleSearchChange} />
+      <h3>add a new</h3>
+      <PersonForm onSubmit={addName} newName={newName} newNumber={newNumber} handleNewName={handleNameChange}
+      handleNewNumber={handleNumberChange} />
+      <h3>Numbers</h3>
+      <Persons filteredPersons={filteredPersons}/>
     </div>
   )
 }
