@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 
-const Person = ({person}) => (
-  <p> {person.name} {person.number}</p>
+const Person = ({person, handleDelete}) => (
+  <p> {person.name} {person.number} <button type='submit' onClick={() =>  handleDelete(person.id)} >delete</button> </p>
 )
 
 const Input = ({text, value, handleChange}) => (
@@ -21,10 +21,10 @@ const PersonForm = ({ onSubmit, newName, newNumber, handleNewName, handleNewNumb
       </form>
 )
 
-const Persons = ({filteredPersons}) => (
+const Persons = ({filteredPersons, handleDelete}) => (
     <div>
       {filteredPersons.map((person) => ( 
-          <Person key={person.name} person={person}/>
+          <Person key={person.name} person={person} handleDelete={handleDelete}/>
         ))}
     </div>
 )
@@ -46,7 +46,7 @@ const App = () => {
     })  }, [])  
     console.log('render', persons.length, 'persons')
 
-  const addName = (event) => {    
+  const addPerson = (event) => {    
     event.preventDefault()    
     console.log('button clicked', event.target)
     const personObject = {
@@ -65,6 +65,17 @@ const App = () => {
       setNewName('')  
       setNewNumber('')    
     })
+  }
+
+  const deletePerson = id => {
+    const person = persons.find(n => n.id === id)
+    if(window.confirm(`Delete ${person.name} ?`))
+    {
+      personService
+      .deletePerson(id)
+      setPersons(persons.filter(persons => persons.id !== id))
+    }
+    
   }
 
   const handleSearchChange = (event) => { 
@@ -90,10 +101,10 @@ const App = () => {
       <h2>Phonebook</h2>
       <Input text='filter shown with' value={searchTerm} handleChange={handleSearchChange} />
       <h3>add a new</h3>
-      <PersonForm onSubmit={addName} newName={newName} newNumber={newNumber} handleNewName={handleNameChange}
+      <PersonForm onSubmit={addPerson} newName={newName} newNumber={newNumber} handleNewName={handleNameChange}
       handleNewNumber={handleNumberChange} />
       <h3>Numbers</h3>
-      <Persons filteredPersons={filteredPersons}/>
+      <Persons filteredPersons={filteredPersons} handleDelete={deletePerson}/>
     </div>
   )
 }
