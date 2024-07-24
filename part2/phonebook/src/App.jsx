@@ -46,7 +46,31 @@ const App = () => {
     })  }, [])  
     console.log('render', persons.length, 'persons')
 
-  const addPerson = (event) => {    
+    const changePerson = updatedPerson => {
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+        personService
+          .update(updatedPerson.id, updatedPerson)
+          .then(returnedPerson => {
+            try {
+              if (returnedPerson) {
+                setPersons(persons.map(person => person.id !== updatedPerson.id ? person : returnedPerson));
+                setNewName('');
+                setNewNumber('');
+              } else {
+                throw new Error('Update failed: No person returned');
+              }
+            } catch (error) {
+              console.error('Error during person update:', error);
+            }
+          })
+          .catch(error => {
+            alert(`The person ${newName} was already deleted from server`);
+            setPersons(persons.filter(person => person.id !== updatedPerson.id));
+          });
+      }
+    };
+    
+    const addPerson = (event) => {    
     event.preventDefault()    
     console.log('button clicked', event.target)
     const personObject = {
@@ -55,8 +79,12 @@ const App = () => {
     }
     const checkName = persons.find(props => props.name.toLowerCase() === personObject.name.toLowerCase())
     if(checkName){
-      window.alert(`${newName} is already added to phonebook`)
-      return
+      if (checkName.number === personObject.number){
+        window.alert(`${newName} is already added to phonebook`)
+        return
+      }
+      const changedPerson = {...checkName, number: newNumber}
+      return changePerson(changedPerson)
     }
     personService
     .create(personObject)
