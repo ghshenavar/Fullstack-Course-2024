@@ -1,23 +1,5 @@
-const Country = ({ country }) => {
-  
-    return (
-      <div>
-        <h1>{country.name.common}</h1>
-        <p>
-          capital {country.capital}
-          <br />
-          area {country.area}
-        </p>
-        <h3>languages:</h3>
-        <ul>
-          {Object.entries(country.languages).map(([languageCode, language]) => (
-            <li key={languageCode}>{language}</li>
-          ))}
-        </ul>
-        <img src={country.flags.png} alt={country.name.common} />
-      </div>
-    );
-  };
+import Country from './Country'
+
 
 const Countries = ({ countries, setCountries }) => {
   if (countries.length > 10) {
