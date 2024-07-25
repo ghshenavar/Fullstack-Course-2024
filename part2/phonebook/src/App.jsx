@@ -1,47 +1,11 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import PersonForm from './Components/PersonForm'
+import Persons from './Components/Persons'
+import Input from './Components/Input'
+import Notification from './Components/Notification'
 
-const Person = ({person, handleDelete}) => (
-  <p> {person.name} {person.number} <button type='submit' onClick={() =>  handleDelete(person.id)} >delete</button> </p>
-)
 
-const Input = ({text, value, handleChange}) => (
-  <div>
-    {text} <input value={value} onChange={handleChange} />
-  </div>
-)
-
-const Notification = ({ message}) => {
-  if (message === null) {
-    return null
-  }
-
-  const { error, text } = message;
-
-  return (
-    <div className={error ? "error" : "message"}>
-      {text}
-    </div>
-  )
-}
-
-const PersonForm = ({ onSubmit, newName, newNumber, handleNewName, handleNewNumber}) => (
-    <form onSubmit={onSubmit}>
-        <Input text='name:' value={newName} handleChange={handleNewName}/>
-        <Input text='number:' value={newNumber} handleChange={handleNewNumber}/>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-)
-
-const Persons = ({filteredPersons, handleDelete}) => (
-    <div>
-      {filteredPersons.map((person) => ( 
-          <Person key={person.name} person={person} handleDelete={handleDelete}/>
-        ))}
-    </div>
-)
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
