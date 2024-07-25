@@ -11,6 +11,20 @@ const Input = ({text, value, handleChange}) => (
   </div>
 )
 
+const Notification = ({ message}) => {
+  if (message === null) {
+    return null
+  }
+
+  const { error, text } = message;
+
+  return (
+    <div className={error ? "error" : "message"}>
+      {text}
+    </div>
+  )
+}
+
 const PersonForm = ({ onSubmit, newName, newNumber, handleNewName, handleNewNumber}) => (
     <form onSubmit={onSubmit}>
         <Input text='name:' value={newName} handleChange={handleNewName}/>
@@ -34,6 +48,14 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+
+  const useMessage = (message) => {
+    setErrorMessage(message)        
+    setTimeout(() => {          
+      setErrorMessage(null)        
+    }, 5000)
+  }
 
 
   useEffect(() => {    
@@ -54,6 +76,7 @@ const App = () => {
             try {
               if (returnedPerson) {
                 setPersons(persons.map(person => person.id !== updatedPerson.id ? person : returnedPerson));
+                useMessage({error: false, text: `Information of ${newName} updated`});
                 setNewName('');
                 setNewNumber('');
               } else {
@@ -64,7 +87,7 @@ const App = () => {
             }
           })
           .catch(error => {
-            alert(`The person ${newName} was already deleted from server`);
+            useMessage({error: true, text: `Information of ${newName} has already been removed from server`});
             setPersons(persons.filter(person => person.id !== updatedPerson.id));
           });
       }
@@ -80,7 +103,7 @@ const App = () => {
     const checkName = persons.find(props => props.name.toLowerCase() === personObject.name.toLowerCase())
     if(checkName){
       if (checkName.number === personObject.number){
-        window.alert(`${newName} is already added to phonebook`)
+        useMessage({error: true, text:`${newName} is already added to phonebook`})
         return
       }
       const changedPerson = {...checkName, number: newNumber}
@@ -89,7 +112,8 @@ const App = () => {
     personService
     .create(personObject)
     .then(response => {
-      setPersons(persons.concat(response))      
+      setPersons(persons.concat(response))
+      useMessage({error: false, text: `Added ${newName}`});      
       setNewName('')  
       setNewNumber('')    
     })
@@ -127,6 +151,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Input text='filter shown with' value={searchTerm} handleChange={handleSearchChange} />
       <h3>add a new</h3>
       <PersonForm onSubmit={addPerson} newName={newName} newNumber={newNumber} handleNewName={handleNameChange}
