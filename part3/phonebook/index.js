@@ -17,6 +17,10 @@ app.use(morgan(customFormat, {
     skip: (req, res) => req.method !== 'POST' 
 }));
 
+const cors = require('cors')
+
+app.use(cors())
+
 
 let persons = [
     { 
