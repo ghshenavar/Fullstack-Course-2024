@@ -4,8 +4,18 @@ const app = express()
 app.use(express.json()); 
 
 const morgan = require('morgan')
-app.use(morgan('tiny'))
 
+// use tiny for all but post requests
+app.use(morgan('tiny', {
+    skip: (req, res) => req.method === 'POST'
+  }));
+
+// 3.8: use custom format for post requests
+morgan.token('body', (req) => JSON.stringify(req.body));
+const customFormat = ':method :url :status :res[content-length] - :response-time ms :body';
+app.use(morgan(customFormat, { 
+    skip: (req, res) => req.method !== 'POST' 
+}));
 
 
 let persons = [
