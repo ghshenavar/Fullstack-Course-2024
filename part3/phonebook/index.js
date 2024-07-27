@@ -3,6 +3,11 @@ const app = express()
 
 app.use(express.json()); 
 
+const morgan = require('morgan')
+app.use(morgan('tiny'))
+
+
+
 let persons = [
     { 
       "id": "1",
@@ -55,7 +60,6 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.get('/info', (request, response) => {
     const date = new Date()
-    console.log(persons.length)
     const info = `<p>Phonebook has info for ${persons.length} people</p>
     <p>${date}</p>`;
     response.send(info)
