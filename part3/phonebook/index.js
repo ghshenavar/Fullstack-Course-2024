@@ -60,11 +60,16 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
   })
 
-app.get('/info', (request, response) => {
+app.get('/info', (request, response, next) => {
     const date = new Date()
-    const info = `<p>Phonebook has info for ${persons.length} people</p>
-    <p>${date}</p>`;
-    response.send(info)
+    Person
+		.find({})
+		.then(result => {
+			response.send(
+				`<p>Phonebook has info for ${result.length} persons</p><p>${date}</p>`
+			)
+		})
+		.catch(error => next(error))
   })
 
 app.post('/api/persons', (request, response, next) => { 
