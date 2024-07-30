@@ -51,8 +51,15 @@ const App = () => {
             }
           })
           .catch(error => {
-            useMessage({error: true, text: `Information of ${newName} has already been removed from server`});
-            setPersons(persons.filter(person => person.id !== updatedPerson.id));
+            const msg = error.response.data.error ? error.response.data.error : 
+            `Information of ${newName} has already been removed from server`
+            useMessage({error: true, text: msg});
+            personService
+              .getAll()      
+              .then(response => {        
+                console.log('promise fulfilled')        
+                setPersons(response)      
+              }) 
           });
       }
     };
