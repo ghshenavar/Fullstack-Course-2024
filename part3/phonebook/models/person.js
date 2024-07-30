@@ -16,7 +16,10 @@ mongoose.connect(url)
     console.log('error connecting to MongoDB:', error.message)  
   })
 const personSchema = new mongoose.Schema({
-    name: String,
+    name: {    
+      type: String,    
+      minLength: 3,    
+      required: true  },
     number: String,
   })
 

@@ -80,6 +80,9 @@ const App = () => {
       useMessage({error: false, text: `Added ${newName}`});      
       setNewName('')  
       setNewNumber('')    
+    }).catch(error => {
+      useMessage({error: true, text:error.response.data.error})
+      console.log(error.response.data.error)
     })
   }
 
