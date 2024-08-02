@@ -2,7 +2,7 @@ POST http://localhost:3003/api/blogs/
 content-type: application/json
 
 {
-    "title": "Secret of life",
+    "title": "All the same",
     "author": "Yours truly",
     "url": "https://www.pexels.com/search/cat/",
     "likes": 10
